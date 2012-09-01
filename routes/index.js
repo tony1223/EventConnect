@@ -51,11 +51,33 @@ exports.index = function(req, res){
 
 exports.event = function(req, res){	
 	findEvent(req.params.id,function(events,item){
-		res.render('event', { title: '活動狂' ,events:item,nav:0} );
+		res.render('event', { title: '活動狂' ,event:item} );
 	});
 }; 
 
 exports.admin = {
+	_new:function(req, res){	
+		res.render('admin/new', {
+			title: '建立活動 ' ,
+			dateFormat:dateformatHelper
+		});
+	}, 
+	create:function(req, res){
+		var db = require("../db");
+
+		db.open(function(err) {
+			if (err) throw err;
+		    /* Select 'contact' collection */
+		    db.collection('events', function(err, events) {		
+		    	var item = {};
+				item.name = req.body.name;
+				item.startDate = new Date(req.body.startDate);
+				item.endDate = new Date(req.body.endDate);
+				events.save(item);
+				res.redirect('/admin/editBackground/'+item._id);
+		    });
+		});
+	},
 	edit:function(req, res){	
 		findEvent(req.params.id,function(events,item){
 			res.render('admin/edit', {
@@ -71,7 +93,6 @@ exports.admin = {
 			item.name = req.body.name;
 			item.startDate = new Date(req.body.startDate);
 			item.endDate = new Date(req.body.endDate);
-			console.dir(item);
 			events.save(item);
 			res.redirect('/'); 
 		});
@@ -85,13 +106,50 @@ exports.admin = {
 			});
 		});
  	},
+ 	updateBackground:function(req,res){
+		findEvent(req.params.id,function(events,item){
+			item.background = req.body.background;
+			events.save(item);
+			res.redirect('/admin/editSeat/'+item._id); 
+		});
+ 	},
+ 	editBackgroundInner:function(req,res){
+ 		findEvent(req.params.id,function(events,item){
+			res.render('admin/editBackgroundInner', {
+				title: '編輯活動地圖 [' + item.name + ']' ,
+				event:item
+			});
+		});	
+ 	},
  	editSeat:function(req, res){	
 		findEvent(req.params.id,function(events,item){
 			res.render('admin/editSeat', {
-				title: '編輯活動 [' + item.name + ']' ,
+				title: '[' + item.name + '] 編輯活動座位 ' ,
 				event:item,
 				nav:2,
 			});
 		});
- 	}
+ 	},
+ 	editSeatInner: function(req, res){
+		findEvent(req.params.id,function(events,item){
+			res.render('admin/editSeatInner', {
+				title: '[' + item.name + '] 編輯活動座位' ,
+				event:item,
+				nav:2,
+			});
+		});
+ 	},
+ 	updateSeat:function(req,res){
+		findEvent(req.params.id,function(events,item){
+			item.seat = req.body.seat;
+			var $ = require("jQuery"),ids = [];
+			$(item.seat).find("ellipse,rect").each(function(){
+				ids.push(this.id);
+			});
+			item.seatIds = ids;
+			console.dir(item);
+			events.save(item);
+			res.redirect('/'); 
+		});
+ 	} 	
 }; 

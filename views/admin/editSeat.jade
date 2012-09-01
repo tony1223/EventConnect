@@ -3,5 +3,14 @@ html
 	include header
 	body	
 		include _nav
-		h1 編輯活動
-			
+		form(id="editSeatForm",action='/admin/updateSeat/' + event._id ,method='post').well
+			div.btn-group
+				a(href='/').btn 取消
+				input(type='submit',value='送出').btn.btn-primary		
+			iframe(id="innerEditor",src="/admin/editSeatInner/"+event._id,onload="window.editor=true;").seatEditor
+			input(type="hidden",id="seat",name="seat",value= event.front)
+			div.btn-group.right
+				a(href='/').btn 取消
+				input(type='submit',value='送出').btn.btn-primary
+		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js")
+		script(src="/js/admin.js")

@@ -485,6 +485,9 @@
 			});
 
 			Editor.canvas = svgCanvas = new $.SvgCanvas(document.getElementById("svgcanvas"), curConfig);
+			if($("#value").length){
+				svgCanvas.setSvgString($("#value").val());
+			}
 			Editor.show_save_warning = false;
 			var palette = ["#000000", "#3f3f3f", "#7f7f7f", "#bfbfbf", "#ffffff",
 			           "#ff0000", "#ff7f00", "#ffff00", "#7fff00",

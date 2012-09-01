@@ -1,10 +1,14 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-a {
-  color: #00B7FF;
+.seat {
+  left: 61px;
+  position: absolute;
+  top: -38px;
 }
-a .myclass {
-  color: red;
+.seat rect {
+  cursor: pointer;
+}
+.seat circle {
+  cursor: pointer;
 }

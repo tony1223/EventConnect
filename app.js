@@ -30,11 +30,20 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', routes.index);
-app.post('/admin/update/:id', routes.admin.update);
+
+app.get('/admin/new', routes.admin._new);
+app.post('/admin/create', routes.admin.create);
 app.get('/admin/edit/:id', routes.admin.edit);
+app.post('/admin/update/:id', routes.admin.update);
+
 app.get('/admin/editBackground/:id', routes.admin.editBackground);
 app.get('/admin/editBackgroundInner/:id', routes.admin.editBackgroundInner);
+app.post('/admin/updateBackground/:id', routes.admin.updateBackground);
+
 app.get('/admin/editSeat/:id', routes.admin.editSeat);
+app.get('/admin/editSeatInner/:id', routes.admin.editSeatInner);
+app.post('/admin/updateSeat/:id', routes.admin.updateSeat);
+
 app.get('/event/:id', routes.event);
 
 app.listen(3000);

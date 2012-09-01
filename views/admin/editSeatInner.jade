@@ -1,0 +1,594 @@
+!!! 5
+html
+  head
+    meta(http-equiv='Content-type', content='text/html;charset=UTF-8')
+    meta(http-equiv='X-UA-Compatible', content='chrome=1')
+    meta(name='viewport', content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    link(rel='stylesheet', href='/svgeditor/jgraduate/css/jPicker.css', type='text/css')
+    link(rel='stylesheet', href='/svgeditor/jgraduate/css/jgraduate.css', type='text/css')
+    link(rel='stylesheet', href='/svgeditor/svg-editor.css', type='text/css')
+    link(rel='stylesheet', href='/svgeditor/spinbtn/JQuerySpinBtn.css', type='text/css')
+    script(type='text/javascript', src='/svgeditor/jquery.js')
+    script(type='text/javascript', src='/svgeditor/js-hotkeys/jquery.hotkeys.min.js')
+    script(type='text/javascript', src='/svgeditor/jquerybbq/jquery.bbq.min.js')
+    script(type='text/javascript', src='/svgeditor/svgicons/jquery.svgicons.js')
+    script(type='text/javascript', src='/svgeditor/jgraduate/jquery.jgraduate.min.js')
+    script(type='text/javascript', src='/svgeditor/spinbtn/JQuerySpinBtn.min.js')
+    script(type='text/javascript', src='/svgeditor/touch.js')
+    script(type='text/javascript', src='/svgeditor/contextmenu/jquery.contextMenu.js')
+    script(type='text/javascript', src='/svgeditor/browser.js')
+    script(type='text/javascript', src='/svgeditor/svgtransformlist.js')
+    script(type='text/javascript', src='/svgeditor/math.js')
+    script(type='text/javascript', src='/svgeditor/units.js')
+    script(type='text/javascript', src='/svgeditor/svgutils.js')
+    script(type='text/javascript', src='/svgeditor/sanitize.js')
+    script(type='text/javascript', src='/svgeditor/history.js')
+    script(type='text/javascript', src='/svgeditor/select.js')
+    script(type='text/javascript', src='/svgeditor/draw.js')
+    script(type='text/javascript', src='/svgeditor/path.js')
+    script(type='text/javascript', src='/svgeditor/svgcanvas.js')
+    script(type='text/javascript', src='/svgeditor/svg-editor.js')
+    script(type='text/javascript', src='/svgeditor/locale/locale.js')
+    script(type='text/javascript', src='/svgeditor/contextmenu.js')
+    script(type='text/javascript', src='/svgeditor/jquery-ui/jquery-ui-1.8.17.custom.min.js')
+    script(type='text/javascript', src='/svgeditor/jgraduate/jpicker.min.js')
+    //
+      link(rel="stylesheet", href="/css/bootstrap.min.css")
+      link(rel="stylesheet", href="/css/bootstrap-responsive.min.css")
+    
+    title #{title}
+  body
+    div(id="background") !{event.background}
+    input(type="hidden",value=event.seat,id="value")
+    #svg_editor
+      #rulers
+        #ruler_corner
+        #ruler_x
+          div
+            canvas(height='15')
+        #ruler_y
+          div
+            canvas(width='15')
+      #workarea
+        style#styleoverrides(type='text/css', media='screen', scoped='scoped')
+        #svgcanvas(style='position: relative;')
+      #sidepanels
+        #layerpanel
+          h3#layersLabel Layers
+          fieldset#layerbuttons
+            #layer_new.layer_button(title='New Layer')
+            #layer_delete.layer_button(title='Delete Layer')
+            #layer_rename.layer_button(title='Rename Layer')
+            #layer_up.layer_button(title='Move Layer Up')
+            #layer_down.layer_button(title='Move Layer Down')
+            #layer_moreopts.layer_button(title='More Options')
+          table#layerlist
+            tr.layer
+              td.layervis
+              td.layername Layer 1
+          span#selLayerLabel Move elements to:
+          select#selLayerNames(title='Move selected elements to a different layer', disabled='disabled')
+            option(selected='selected', value='layer1') Layer 1
+        #sidepanel_handle(title='Drag left/right to resize side panel [X]') L a y e r s
+      #main_button(style="display:none;")
+        #main_icon.buttonup(title='Main Menu')
+          span
+          #logo
+          .dropdown
+        #main_menu
+          //
+             File-like buttons: New, Save, Source 
+          ul
+            li#tool_clear
+              div
+              | New Image (N)
+            li#tool_open(style='display: none;')
+              #fileinputs
+                div
+              | Open Image
+            li#tool_import(style='display: none;')
+              #fileinputs_import
+                div
+              | Import SVG
+            li#tool_save
+              div
+              | Save Image (S)
+            li#tool_export
+              div
+              | Export as PNG
+            li#tool_docprops
+              div
+              | Document Properties (D)
+          p
+            a(href='http://svg-edit.googlecode.com/', target='_blank')
+              | SVG-edit Home Page
+          button#tool_prefs_option
+            | Editor Options
+      #tools_top.tools_panel
+        #editor_panel(style="display:none;")
+          #tool_source.push_button(title='Edit Source [U]')
+          #tool_wireframe.tool_button(title='Wireframe Mode [F]')
+        //
+           History buttons 
+        #history_panel(style="display:none;")
+          .tool_sep
+          #tool_undo.push_button.tool_button_disabled(title='Undo [Z]')
+          #tool_redo.push_button.tool_button_disabled(title='Redo [Y]')
+        //
+           Buttons when a single element is selected 
+        #selected_panel
+          .toolset
+            .tool_sep
+            #tool_clone.push_button(title='Duplicate Element [D]')(style="display:none;")
+            #tool_delete.push_button(title='Delete Element [Delete/Backspace]')
+            .tool_sep(style="display:none;")
+            #tool_move_top.push_button(title='Bring to Front [ Ctrl+Shift+] ]')(style="display:none;")
+            #tool_move_bottom.push_button(title='Send to Back [ Ctrl+Shift+[ ]')(style="display:none;")
+            #tool_topath.push_button(title='Convert to Path')(style="display:none;")
+            #tool_reorient.push_button(title='Reorient path')(style="display:none;")
+            #tool_make_link.push_button(title='Make (hyper)link')(style="display:none;")
+            .tool_sep
+            label#idLabel(title='Identify the element')(style="display:none;")
+              span id:
+              input#elem_id.attr_changer(data-attr='id', size='10', type='text')
+          label#tool_angle.toolset(title='Change rotation angle')(style='display: none;')
+            span#angleLabel.icon_label
+            input#angle(size='2', value='0', type='text')
+          #tool_blur.toolset(title='Change gaussian blur value')(style='display: none;')
+            label
+              span#blurLabel.icon_label
+              input#blur(size='2', value='0', type='text')
+            #blur_dropdown.dropdown
+              button
+              ul
+                li.special
+                  #blur_slider
+          #tool_position.dropdown.toolset(title='Align Element to Page')(style='display: none;')
+            #cur_position.icon_label
+            button
+          #xy_panel.toolset
+            label
+              | x:
+              input#selected_x.attr_changer(title='Change X coordinate', size='3', data-attr='x')
+            label
+              | y:
+              input#selected_y.attr_changer(title='Change Y coordinate', size='3', data-attr='y')
+        //
+           Buttons when multiple elements are selected 
+        #multiselected_panel
+          .tool_sep
+          #tool_clone_multi.push_button(title='Clone Elements [C]')
+          #tool_delete_multi.push_button(title='Delete Selected Elements [Delete/Backspace]')
+          .tool_sep
+          #tool_group.push_button(title='Group Elements [G]')
+          #tool_make_link_multi.push_button(title='Make (hyper)link')(style='display: none;')
+          #tool_alignleft.push_button(title='Align Left')
+          #tool_aligncenter.push_button(title='Align Center')
+          #tool_alignright.push_button(title='Align Right')
+          #tool_aligntop.push_button(title='Align Top')
+          #tool_alignmiddle.push_button(title='Align Middle')
+          #tool_alignbottom.push_button(title='Align Bottom')
+          label#tool_align_relative
+            span#relativeToLabel relative to:
+            select#align_relative_to(title='Align relative to ...')
+              option#selected_objects(value='selected') selected objects
+              option#largest_object(value='largest') largest object
+              option#smallest_object(value='smallest') smallest object
+              option#page(value='page') page
+          .tool_sep
+        #rect_panel
+          .toolset
+            label#rect_width_tool(title='Change rectangle width')
+              span#rwidthLabel.icon_label
+              input#rect_width.attr_changer(size='3', data-attr='width')
+            label#rect_height_tool(title='Change rectangle height')
+              span#rheightLabel.icon_label
+              input#rect_height.attr_changer(size='3', data-attr='height')
+          label#cornerRadiusLabel.toolset(title='Change Rectangle Corner Radius')
+            span.icon_label
+            input#rect_rx(size='3', value='0', type='text', data-attr='Corner Radius')
+        #image_panel(style='display: none;')
+          .toolset
+            label
+              span#iwidthLabel.icon_label
+              input#image_width.attr_changer(title='Change image width', size='3', data-attr='width')
+            label
+              span#iheightLabel.icon_label
+              input#image_height.attr_changer(title='Change image height', size='3', data-attr='height')
+          .toolset
+            label#tool_image_url
+              | url:
+              input#image_url(type='text', title='Change URL', size='35')
+            label#tool_change_image
+              button#change_image_url(style='display: none;') Change Image
+              span#url_notice(title='NOTE: This image cannot be embedded. It will depend on this path to be displayed')
+        #circle_panel
+          .toolset
+            label#tool_circle_cx
+              | cx:
+              input#circle_cx.attr_changer(title='Change circle\'s cx coordinate', size='3', data-attr='cx')
+            label#tool_circle_cy
+              | cy:
+              input#circle_cy.attr_changer(title='Change circle\'s cy coordinate', size='3', data-attr='cy')
+          .toolset
+            label#tool_circle_r
+              | r:
+              input#circle_r.attr_changer(title='Change circle\'s radius', size='3', data-attr='r')
+        #ellipse_panel(style='display: none;')
+          .toolset
+            label#tool_ellipse_cx
+              | cx:
+              input#ellipse_cx.attr_changer(title='Change ellipse\'s cx coordinate', size='3', data-attr='cx')
+            label#tool_ellipse_cy
+              | cy:
+              input#ellipse_cy.attr_changer(title='Change ellipse\'s cy coordinate', size='3', data-attr='cy')
+          .toolset
+            label#tool_ellipse_rx
+              | rx:
+              input#ellipse_rx.attr_changer(title='Change ellipse\'s x radius', size='3', data-attr='rx')
+            label#tool_ellipse_ry
+              | ry:
+              input#ellipse_ry.attr_changer(title='Change ellipse\'s y radius', size='3', data-attr='ry')
+        #line_panel(style='display: none;')
+          .toolset
+            label#tool_line_x1
+              | x1:
+              input#line_x1.attr_changer(title='Change line\'s starting x coordinate', size='3', data-attr='x1')
+            label#tool_line_y1
+              | y1:
+              input#line_y1.attr_changer(title='Change line\'s starting y coordinate', size='3', data-attr='y1')
+          .toolset
+            label#tool_line_x2
+              | x2:
+              input#line_x2.attr_changer(title='Change line\'s ending x coordinate', size='3', data-attr='x2')
+            label#tool_line_y2
+              | y2:
+              input#line_y2.attr_changer(title='Change line\'s ending y coordinate', size='3', data-attr='y2')
+        #text_panel(style='display: none;')
+          .toolset
+            #tool_bold.tool_button(title='Bold Text [B]')
+              span
+              | B
+            #tool_italic.tool_button(title='Italic Text [I]')
+              span
+              | i
+          #tool_font_family.toolset
+            label
+              //
+                 Font family 
+              input#font_family(type='text', title='Change Font Family', size='12')
+            #font_family_dropdown.dropdown
+              button
+              ul
+                li(style='font-family: serif;') Serif
+                li(style='font-family: sans-serif;') Sans-serif
+                li(style='font-family: cursive;') Cursive
+                li(style='font-family: fantasy;') Fantasy
+                li(style='font-family: monospace;') Monospace
+          label#tool_font_size(title='Change Font Size')
+            span#font_sizeLabel.icon_label
+            input#font_size(size='3', value='0', type='text')
+          //
+             Not visible, but still used 
+          input#text(type='text', size='35')
+        //
+           formerly gsvg_panel 
+        #container_panel
+          .tool_sep
+          //
+             Add viewBox field here? 
+          label#group_title(title='Group identification label')
+            span label:
+            input#g_title(data-attr='title', size='10', type='text')
+        #use_panel
+          #tool_unlink_use.push_button(title='Break link to reference element (make unique)')
+        #g_panel
+          #tool_ungroup.push_button(title='Ungroup Elements [G]')
+        //
+           For anchor elements 
+        #a_panel(style='display: none;')
+          label#tool_link_url(title='Set link URL (leave empty to remove)')
+            span#linkLabel.icon_label
+            input#link_url(type='text', size='35')
+        #path_node_panel(style='display: none;')
+          .tool_sep
+          #tool_node_link.tool_button.push_button_pressed(title='Link Control Points')
+          .tool_sep
+          label#tool_node_x
+            | x:
+            input#path_node_x.attr_changer(title='Change node\'s x coordinate', size='3', data-attr='x')
+          label#tool_node_y
+            | y:
+            input#path_node_y.attr_changer(title='Change node\'s y coordinate', size='3', data-attr='y')
+          select#seg_type(title='Change Segment type')
+            option#straight_segments(selected='selected', value='4') Straight
+            option#curve_segments(value='6') Curve
+          #tool_node_clone.tool_button(title='Clone Node')
+          #tool_node_delete.tool_button(title='Delete Node')
+          #tool_openclose_path.tool_button(title='Open/close sub-path')
+          #tool_add_subpath.tool_button(title='Add sub-path')
+      //
+         tools_top 
+      #cur_context_panel
+      #tools_left.tools_panel
+        #tool_select.tool_button(title='Select Tool')
+        #tool_fhpath.tool_button(title='Pencil Tool')(style='display: none;')
+        #tool_line.tool_button(title='Line Tool')(style='display: none;')
+        #tools_rect_show.tool_button.flyout_current(title='Square/Rect Tool')
+          .flyout_arrow_horiz
+        #tools_ellipse_show.tool_button.flyout_current(title='Ellipse/Circle Tool')
+          .flyout_arrow_horiz
+        #tool_path.tool_button(title='Path Tool')(style='display: none;')
+        #tool_text.tool_button(title='Text Tool')(style='display: none;')
+        #tool_image.tool_button(title='Image Tool')(style='display: none;')
+        #tool_zoom.tool_button(title='Zoom Tool [Ctrl+Up/Down]')(style='display: none;')
+        div(style='display: none;')
+          #tool_rect(title='Rectangle')
+          #tool_square(title='Square')
+          #tool_fhrect(title='Free-Hand Rectangle')(style="display:none;")
+          #tool_ellipse(title='Ellipse')
+          #tool_circle(title='Circle')
+          #tool_fhellipse(title='Free-Hand Ellipse')(style="display:none;")
+      //
+         tools_left 
+      #tools_bottom.tools_panel
+        //
+           Zoom buttons 
+        #zoom_panel.toolset(title='Change zoom level')(style='display: none;')
+          label
+            span#zoomLabel.zoom_tool.icon_label
+            input#zoom(size='3', value='100', type='text')
+          #zoom_dropdown.dropdown
+            button
+            ul
+              li 1000%
+              li 400%
+              li 200%
+              li 100%
+              li 50%
+              li 25%
+              li#fit_to_canvas(data-val='canvas') Fit to canvas
+              li#fit_to_sel(data-val='selection') Fit to selection
+              li#fit_to_layer_content(data-val='layer') Fit to layer content
+              li#fit_to_all(data-val='content') Fit to all content
+              li 100%
+          .tool_sep
+        #tools_bottom_2(style='display: none;')
+          #color_tools
+            #tool_fill.color_tool
+              label.icon_label(for='fill_color', title='Change fill color')
+              .color_block
+                #fill_bg
+                #fill_color.color_block
+            #tool_stroke.color_tool
+              .color_block
+                label.icon_label(title='Change stroke color')
+              .color_block
+                #stroke_bg
+                #stroke_color.color_block(title='Change stroke color')
+              label
+                input#stroke_width(title='Change stroke width by 1, shift-click to change by 0.1', size='2', value='5', type='text', data-attr='Stroke Width')
+              label.stroke_tool
+                select#stroke_style(title='Change stroke dash style')
+                  option(selected='selected', value='none') —
+                  option(value='2,2') ...
+                  option(value='5,5') - -
+                  option(value='5,2,2,2') - .
+                  option(value='5,2,2,2,2,2') - ..
+              #stroke_linejoin.stroke_tool.dropdown
+                div
+                  #cur_linejoin(title='Linejoin: Miter')
+                  button
+              #stroke_linecap.stroke_tool.dropdown
+                div
+                  #cur_linecap(title='Linecap: Butt')
+                  button
+              #toggle_stroke_tools(title='Show/hide more stroke tools')
+                | >>
+          #tool_opacity.toolset(title='Change selected item opacity')
+            label
+              span#group_opacityLabel.icon_label
+              input#group_opacity(size='3', value='100', type='text')
+            #opacity_dropdown.dropdown
+              button
+              ul
+                li 0%
+                li 25%
+                li 50%
+                li 75%
+                li 100%
+                li.special
+                  #opac_slider
+        #tools_bottom_3(style='display: none;')
+          #palette_holder
+            #palette(title='Click to change fill color, shift-click to change stroke color')
+        #copyright
+          span#copyrightLabel Powered by
+          a(href='http://svg-edit.googlecode.com/', target='_blank') SVG-edit v2.6-alpha
+      #option_lists.dropdown
+        ul#linejoin_opts
+          li#linejoin_miter.tool_button.current(title='Linejoin: Miter')
+          li#linejoin_round.tool_button(title='Linejoin: Round')
+          li#linejoin_bevel.tool_button(title='Linejoin: Bevel')
+        ul#linecap_opts
+          li#linecap_butt.tool_button.current(title='Linecap: Butt')
+          li#linecap_square.tool_button(title='Linecap: Square')
+          li#linecap_round.tool_button(title='Linecap: Round')
+        ul#position_opts.optcols3
+          li#tool_posleft.push_button(title='Align Left')
+          li#tool_poscenter.push_button(title='Align Center')
+          li#tool_posright.push_button(title='Align Right')
+          li#tool_postop.push_button(title='Align Top')
+          li#tool_posmiddle.push_button(title='Align Middle')
+          li#tool_posbottom.push_button(title='Align Bottom')
+      //
+         hidden divs 
+      #color_picker
+    //
+       svg_editor 
+    #svg_source_editor
+      #svg_source_overlay
+      #svg_source_container
+        #tool_source_back.toolbar_button
+          button#tool_source_save Apply Changes
+          button#tool_source_cancel Cancel
+        #save_output_btns
+          p#copy_save_note
+            | Copy the contents of this box into a text editor, then save the file with a .svg extension.
+          button#copy_save_done Done
+        form
+          textarea#svg_source_textarea(spellcheck='false')
+    #svg_docprops
+      #svg_docprops_overlay
+      #svg_docprops_container
+        #tool_docprops_back.toolbar_button
+          button#tool_docprops_save OK
+          button#tool_docprops_cancel Cancel
+        fieldset#svg_docprops_docprops
+          legend#svginfo_image_props Image Properties
+          label
+            span#svginfo_title Title:
+            input#canvas_title(type='text')
+          fieldset#change_resolution
+            legend#svginfo_dim Canvas Dimensions
+            label
+              span#svginfo_width width:
+              input#canvas_width(type='text', size='6')
+            label
+              span#svginfo_height height:
+              input#canvas_height(type='text', size='6')
+            label
+              select#resolution
+                option#selectedPredefined(selected='selected') Select predefined:
+                option 640x480
+                option 800x600
+                option 1024x768
+                option 1280x960
+                option 1600x1200
+                option#fitToContent(value='content') Fit to Content
+          fieldset#image_save_opts
+            legend#includedImages Included Images
+            label
+              input(type='radio', name='image_opt', value='embed', checked='checked')
+              span#image_opt_embed Embed data (local files)
+            label
+              input(type='radio', name='image_opt', value='ref')
+              span#image_opt_ref Use file reference
+    #svg_prefs
+      #svg_prefs_overlay
+      #svg_prefs_container
+        #tool_prefs_back.toolbar_button
+          button#tool_prefs_save OK
+          button#tool_prefs_cancel Cancel
+        fieldset
+          legend#svginfo_editor_prefs Editor Preferences
+          label
+            span#svginfo_lang Language:
+            //
+               Source: http://en.wikipedia.org/wiki/Language_names 
+            select#lang_select
+              option#lang_ar(value='ar') العربية
+              option#lang_cs(value='cs') Čeština
+              option#lang_de(value='de') Deutsch
+              option#lang_en(value='en', selected='selected') English
+              option#lang_es(value='es') Español
+              option#lang_fa(value='fa') فارسی
+              option#lang_fr(value='fr') Français
+              option#lang_fy(value='fy') Frysk
+              option#lang_hi(value='hi') हिन्दी, हिंदी
+              option#lang_it(value='it') Italiano
+              option#lang_ja(value='ja') 日本語
+              option#lang_nl(value='nl') Nederlands
+              option#lang_pt-BR(value='pt-BR') Português (BR)
+              option#lang_ro(value='ro') Româneşte
+              option#lang_ru(value='ru') Русский
+              option#lang_sk(value='sk') Slovenčina
+              option#lang_zh-TW(value='zh-TW') 繁體中文
+          label
+            span#svginfo_icons Icon size:
+            select#iconsize
+              option#icon_small(value='s') Small
+              option#icon_medium(value='m', selected='selected') Medium
+              option#icon_large(value='l') Large
+              option#icon_xlarge(value='xl') Extra Large
+          fieldset#change_background
+            legend#svginfo_change_background Editor Background
+            #bg_blocks
+            label
+              span#svginfo_bg_url URL:
+              input#canvas_bg_url(type='text')
+            p#svginfo_bg_note Note: Background will not be saved with image.
+          fieldset#change_grid
+            legend#svginfo_grid_settings Grid
+            label
+              span#svginfo_snap_onoff Snapping on/off
+              input#grid_snapping_on(type='checkbox', value='snapping_on')
+            label
+              span#svginfo_snap_step Snapping Step-Size:
+              input#grid_snapping_step(type='text', size='3', value='10')
+          fieldset#units_rulers
+            legend#svginfo_units_rulers Units & Rulers
+            label
+              span#svginfo_rulers_onoff Show rulers
+              input#show_rulers(type='checkbox', value='show_rulers', checked='checked')
+            label
+              span#svginfo_unit Base Unit:
+              select#base_unit
+                option(value='px') Pixels
+                option(value='cm') Centimeters
+                option(value='mm') Millimeters
+                option(value='in') Inches
+                option(value='pt') Points
+                option(value='pc') Picas
+                option(value='em') Ems
+                option(value='ex') Exs
+    #dialog_box
+      #dialog_box_overlay
+      #dialog_container
+        #dialog_content
+        #dialog_buttons
+    ul#cmenu_canvas.contextMenu
+      li
+        a(href='#cut') Cut
+      li
+        a(href='#copy') Copy
+      li
+        a(href='#paste') Paste
+      li
+        a(href='#paste_in_place') Paste in Place
+      li.separator
+        a(href='#delete') Delete
+      li.separator
+        a(href='#group')
+          | Group
+          span.shortcut G
+      li
+        a(href='#ungroup')
+          | Ungroup
+          span.shortcut G
+      li.separator
+        a(href='#move_front')
+          | Bring to Front
+          span.shortcut SHFT+CTRL+]
+      li
+        a(href='#move_up')
+          | Bring Forward
+          span.shortcut CTRL+]
+      li
+        a(href='#move_down')
+          | Send Backward
+          span.shortcut CTRL+[
+      li
+        a(href='#move_back')
+          | Send to Back
+          span.shortcut SHFT+CTRL+[
+    ul#cmenu_layers.contextMenu
+      li
+        a(href='#dupe') Duplicate Layer...
+      li
+        a(href='#delete') Delete Layer
+      li
+        a(href='#merge_down') Merge Down
+      li
+        a(href='#merge_all') Merge All
