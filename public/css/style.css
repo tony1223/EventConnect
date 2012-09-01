@@ -12,3 +12,21 @@ body {
 .seat circle {
   cursor: pointer;
 }
+.toolbar {
+  position: fixed;
+  bottom: 5%;
+  width: 100px;
+  left: 0%;
+  height: 20px;
+}
+.toolbar #username {
+  font-size: 24px;
+  font-weight: bold;
+  width: 200px;
+}
+.userlist {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100px;
+}

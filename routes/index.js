@@ -147,9 +147,97 @@ exports.admin = {
 				ids.push(this.id);
 			});
 			item.seatIds = ids;
-			console.dir(item);
 			events.save(item);
 			res.redirect('/'); 
 		});
  	} 	
+}; 
+
+
+
+exports.api = {
+	getUserName: function(req,res){
+		var db = require("../db");
+		db.open(function(err) {
+			if (err) throw err;
+		    /* Select 'contact' collection */
+		    db.collection('users', function(err, users) {
+		    	users.find({fbuid:req.params.fbuid}).toArray(function(err,items){
+		    		if( items.length == 0 ){
+		    			res.send({isSuccess:false,data:null});
+		    		}else{
+		    			res.send({isSuccess:true,data:items[0].name});
+		    		}
+		    	});
+		    	db.close();
+			});
+		});
+	},
+	setUserName: function(req,res){
+		var db = require("../db");
+		db.open(function(err) {
+			if (err) throw err;
+		    /* Select 'contact' collection */
+		    db.collection('users', function(err, users) {
+		    	users.find({fbuid:req.params.fbuid}).toArray(function(err,items){
+		    		if( items.length == 0 ){
+		    			var obj = { fbuid:req.params.fbuid , name : req.body.name};
+		    			users.save(obj);
+		    			res.send({isSuccess:true,data:obj.name});
+		    		}else{
+		    			res.send({isSuccess:false,data:null});
+		    		}
+		    	});
+		    	db.close();
+			});
+		});
+	},
+	getUserSeats:function (req,res){
+		var db = require("../db");
+		db.open(function(err) {
+			if (err) throw err;
+		    /* Select 'contact' collection */
+		    db.collection('user_seat', function(err, user_seats) {
+		    	//user_seats.remove({});
+		    	user_seats.find({
+		    		eventId: req.params.eventId
+		    	}).toArray(function(err,items){
+	    			res.send({isSuccess:true,data:items});
+		    	});
+		    	db.close();
+			});
+		});
+	},
+	doOrderSeat:function (req,res){
+		var db = require("../db");
+		db.open(function(err) {
+			if (err) throw err;
+		    /* Select 'contact' collection */
+		    db.collection('user_seat', function(err, user_seats) {
+		    	//user_seats.remove({});
+		    	user_seats.find({
+		    		fbuid:req.body.fbuid,
+		    		eventId: req.body.eventId
+		    	}).toArray(function(err,items){
+		    		if( items.length == 0 ){
+		    			var obj = { 
+		    				fbuid:req.body.fbuid , 
+		    				name : req.body.name, 
+		    				eventId :req.body.eventId,
+		    				seatId: req.body.seatId
+		    			};
+		    			user_seats.save(obj);
+		    			console.dir(obj);
+		    			res.send({isSuccess:true,data:obj.name});
+		    		}else{
+		    			var obj = items[0];
+		    			obj.seatId =  req.body.seatId;
+		    			user_seats.save(obj);
+		    			res.send({isSuccess:true,data:obj.name});
+		    		}
+		    	});
+		    	db.close();
+			});
+		});
+	}
 }; 

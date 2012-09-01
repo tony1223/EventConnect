@@ -2,8 +2,17 @@
 html
 	include header
 	body
+		input(type="hidden",id="eventId",value=event._id)
 		div.background
 			!{event.background}
 		div.seat
 			!{event.seat}
+		div.userlist
+			
+		div.toolbar
+			a(href="/").btn 回首頁
+			div.login
+				a(id="join",style="display:none;").btn FB Login
+			div.auth(style="display:none;")
+				div(id="username").btn
 		include footer

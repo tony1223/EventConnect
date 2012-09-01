@@ -46,5 +46,13 @@ app.post('/admin/updateSeat/:id', routes.admin.updateSeat);
 
 app.get('/event/:id', routes.event);
 
+
+app.get('/api/getUserName/:fbuid', routes.api.getUserName);
+app.post('/api/setUserName/:fbuid', routes.api.setUserName);
+app.post('/api/doOrderSeat/', routes.api.doOrderSeat);
+
+app.get('/api/getUserSeats/:eventId', routes.api.getUserSeats);
+
+
 app.listen(3000);
 console.log("Express server listening on port:"+new Date());
