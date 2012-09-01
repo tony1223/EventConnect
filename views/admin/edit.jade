@@ -1,0 +1,19 @@
+!!! 5
+html
+	include header
+	body	
+		include _nav
+		form(action='/admin/update/' + event._id ,method='post').well
+			div
+				label 活動名稱
+				input(name='name',id='name',type='text',value=event.name)
+			div
+				label 活動開始時間
+				input(name='startDate',id='startDate',type='text',value = dateFormat(event.startDate))
+			div
+				label 活動結束時間
+				input(name='endDate',id='endDate',type='text',value= dateFormat(event.endDate) )
+			div.btn-group
+				a(href='/').btn 取消
+				input(type='submit',value='送出').btn.btn-primary
+			

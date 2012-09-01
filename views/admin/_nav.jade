@@ -1,0 +1,23 @@
+.navbar
+	.navbar-inner
+		ul.nav
+			if(nav == 0)
+				li.active
+					a(href='/admin/edit/'+event._id) 修改資料
+			else
+				li	
+					a(href='/admin/edit/'+event._id) 修改資料
+			if(nav == 1)
+				li.active	
+					a(href='/admin/editBackground/'+event._id) 修改活動狂背景
+			else
+				li	
+					a(href='/admin/editBackground/'+event._id) 修改活動狂背景
+			if(nav == 2)
+				li.active	
+					a(href='/admin/editSeat/'+event._id) 修改活動狂顯示座位
+			else
+				li	
+					a(href='/admin/editSeat/'+event._id) 修改活動狂顯示座位							
+			li	
+					a(href='/') 回首頁							

@@ -1,0 +1,21 @@
+!!! 5
+html
+	include header
+	body
+		table.table.table-striped
+			thead
+				tr
+					th #
+					th EventName
+					th EventStartDate
+					th EventEndDate
+			tbody
+			each event, i in events
+				tr
+					td #{i+1}
+					td: a(href='/event/' + event._id) #{event.name}					
+					td #{dateFormat(event.startDate)}
+					td #{dateFormat(event.endDate)}
+					td: a(href='/admin/edit/' + event._id) 編輯活動狂
+
+		
