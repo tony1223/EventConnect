@@ -8,11 +8,15 @@ html
 		div.seat
 			!{event.seat}
 		div.userlist
+			div.caption 使用者清單
+			table.table.table-bordered.table-hover#users
+
 			
-		div.toolbar
-			a(href="/").btn 回首頁
+		div.toolbar(data-fbuid=fbuid)
+			a(href="/").btn.home 回首頁
 			div.login
 				a(id="join",style="display:none;").btn FB Login
 			div.auth(style="display:none;")
 				div(id="username").btn
 		include footer
+		script(src="/js/require-jquery.js",data-main="/js/event")

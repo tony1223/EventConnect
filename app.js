@@ -11,6 +11,8 @@ db.open(function(err) {
 var express = require('express');
 var routes = require('./routes')(db);
 var app = express();
+var CookieStore = require('cookie-sessions');
+var config = require("./config");
 
 // Configuration
 
@@ -18,7 +20,7 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(require('less-middleware')({ src: __dirname + '/public/' ,force:true ,compress: false/*, debug:true*/}));
-
+  app.use(CookieStore({ secret: config.secret }));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
@@ -33,7 +35,8 @@ app.configure('production', function(){
 });
 
 // Routes
-app.get('/admin', routes.index);
+app.get('/', routes.index);
+app.get('/admin', routes.admin.index);
 
 app.get('/admin/new', routes.admin._new);
 app.post('/admin/create', routes.admin.create);
@@ -52,7 +55,7 @@ app.post('/admin/updateSeat/:id', routes.admin.updateSeat);
 app.get('/event/:id', routes.event);
 
 
-app.get('/api/getUserName/:fbuid', routes.api.getUserName);
+app.post('/api/login/:fbuid', routes.api.login);
 app.post('/api/setUserName/:fbuid', routes.api.setUserName);
 app.post('/api/doOrderSeat/', routes.api.doOrderSeat);
 

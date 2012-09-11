@@ -39,12 +39,26 @@ module.exports = function(db){
 	}; 
 
 	this.event = function(req, res){	
+		console.log(req.session);
 		findEvent(req.params.id,function(events,item){
-			res.render('event', { title: '活動狂' ,event:item} );
+			console.log("session:"+(req.session ? req.session.fbuid : null) );
+			res.render('event', { 
+				title: '活動狂' ,
+				event:item,
+				fbuid:(req.session ? req.session.fbuid : null)
+			} );
 		});
 	}; 
 
 	this.admin = {
+		index : function(req, res){
+		    /* Select 'contact' collection */
+		    db.collection('events', function(err, events) {
+		    	events.find({}).toArray(function(err,items){
+		    		res.render('admin/index', { title: '活動狂' ,events:items,dateFormat:dateformatHelper} );
+		    	});
+			});
+		},
 		_new:function(req, res){	
 			res.render('admin/new', {
 				title: '建立活動 ' ,
@@ -143,16 +157,18 @@ module.exports = function(db){
 	 	} 	
 	}; 
 
+	//this.admin
 
 
 	this.api = {
-		getUserName: function(req,res){
+		login: function(req,res){
 		    /* Select 'contact' collection */
 		    db.collection('users', function(err, users) {
 		    	users.find({fbuid:req.params.fbuid}).toArray(function(err,items){
 		    		if( items.length == 0 ){
 		    			res.send({isSuccess:false,data:null});
 		    		}else{
+		    			req.session = { fbuid: req.params.fbuid };
 		    			res.send({isSuccess:true,data:items[0].name});
 		    		}
 		    	});
@@ -165,6 +181,8 @@ module.exports = function(db){
 		    		if( items.length == 0 ){
 		    			var obj = { fbuid:req.params.fbuid , name : req.body.name};
 		    			users.save(obj);
+		    			req.session = req.session  || {};
+		    			req.session.fbuid = req.params.fbuid;
 		    			res.send({isSuccess:true,data:obj.name});
 		    		}else{
 		    			res.send({isSuccess:false,data:null});

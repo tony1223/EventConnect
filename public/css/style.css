@@ -15,7 +15,7 @@ body {
 .toolbar {
   position: fixed;
   bottom: 5%;
-  width: 100px;
+  width: 300px;
   left: 0%;
   height: 20px;
 }
@@ -24,9 +24,18 @@ body {
   font-weight: bold;
   width: 200px;
 }
+.toolbar .login,
+.toolbar .home {
+  float: left;
+}
 .userlist {
   position: fixed;
   right: 0;
   top: 0;
   width: 100px;
+  height: 800px;
+  overflow: auto;
+}
+.userlist .caption {
+  padding: 5px;
 }
