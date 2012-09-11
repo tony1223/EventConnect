@@ -80,23 +80,28 @@ module.exports = function(db){
 					res.render('event', { 
 						title: '活動狂 Event Connect' ,
 						event:item,
-						user : user,
+						user : user/*,
 						access:req.session.accesstoken
+						*/
 					} );
 				},function(){
 					res.render('event', { 
 						title: '活動狂 Event Connect' ,
 						event:item,
-						user : {fbuid:'',name:''},
+						user : {fbuid:'',name:''}
+						/*,
 						access:req.session.accesstoken
+						*/
 					});
 				});
 			}else{
 				res.render('event', { 
 					title: '活動狂 Event Connect' ,
 					event:item,
-					user :{fbuid:'',name:''},
+					user :{fbuid:'',name:''}
+					/*,
 					access:req.session.accesstoken
+					*/
 				} );
 			}
 		});
