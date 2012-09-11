@@ -54,7 +54,7 @@ app.post('/admin/updateSeat/:id', routes.admin.updateSeat);
 
 app.get('/event/:id', routes.event);
 
-
+app.post('/api/logout', routes.api.logout);
 app.post('/api/login/:fbuid', routes.api.login);
 app.post('/api/cancelEvent', routes.api.cancelEvent);
 app.post('/api/joinEvent', routes.api.joinEvent);

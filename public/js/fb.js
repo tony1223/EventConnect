@@ -21,7 +21,7 @@ define("FB",[],function(){
     		if(!this._init){
     			this._queue.push(fn);
     		}else{
-    			fn.apply(FB);
+    			fn(FB);
     		}
     	}
     };  
@@ -33,7 +33,10 @@ define("FB",[],function(){
 	      cookie     : true, // enable cookies to allow the server to access the session
 	      xfbml      : true  // parse XFBML
     	});
-    	FBProxy.init();
+      setTimeout(function(){
+        FBProxy.init()
+      },800);
+    	
     };
     return FBProxy;
 });

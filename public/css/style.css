@@ -38,7 +38,8 @@ body {
   float: left;
 }
 .toolbar .auth .join,
-.toolbar .auth .cancel {
+.toolbar .auth .cancel,
+.toolbar .auth #Logout {
   float: left;
 }
 .notlogin .auth {

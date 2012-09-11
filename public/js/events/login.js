@@ -13,28 +13,28 @@ define(["jquery","FB","global"],function($,FBUtil,global){
 			$(".toolbar").addClass("notlogin").removeClass("joined").removeClass("notjoin");
 		});
 
-	    function doLogin(fbuid,name,join){
-	    	window.loginInfo = {uid :fbuid ,name:name };
+	    function doLogin(fbuid,name,join,access){
+	    	window.loginInfo = {uid :fbuid ,name:name,access:access };
 	    	if(!join){
 	    		toolbar.trigger("login");
 	    	}else{
 	    		toolbar.trigger("join");
 	    	}
-	    	global.trigger("logined");
+	    	global.trigger("logined",{info:window.loginInfo});
 	    	$(".seat rect").each(function(){
 				if(this.uid == fbuid){
 					this.setAttribute("fill",Infos.Color.self);
 				}
 			});
-			$("#username").on("rename",function(e){
+			$("#username").on("rename",function(e,data){
 				jPrompt("您好，請輸入一個您想要的暱稱",'','輸入暱稱',
 					function(name){
 						if(name){
 		   				$.post("/api/setUserName/"+fbuid,{name:name},function(){
 							$("#username").html("User:"+name);
 		   				});
-		   				if(e.data && e.data.cb){
-		   					e.data.cb();
+		   				if(data && data.cb){
+		   					data.cb();
 		   				}
 		   			}
 					}
@@ -83,16 +83,20 @@ define(["jquery","FB","global"],function($,FBUtil,global){
 							/* accessToken,userID */
 							var uid = response.authResponse.userID;
 							var name = "";
-							$.post("/api/login/"+uid).then(function(data){
+							$.post("/api/login/"+uid,
+									{
+										accesstoken:response.authResponse.accessToken
+									}
+								).then(function(data){
 								if(data.isSuccess){
 									name = data.data;
 									if(data.cb) data.cb();
-									doLogin(uid,name);
+									doLogin(uid,name,data.join,response.authResponse.accessToken);
 								}else{
 									$("#username").trigger("rename",{
 										cb:function(){
-										doLogin(uid,name);
-										if(data.cb) data.cb();
+											doLogin(uid,name,false,response.authResponse.accessToken);
+											if(data.cb) data.cb();
 										}
 									});
 								}
@@ -100,16 +104,23 @@ define(["jquery","FB","global"],function($,FBUtil,global){
 					} else {
 					 alert('User cancelled login or did not fully authorize.');
 					}
-				}, {scope:'email,read_friendlists'});
+				}, {scope:'email,read_friendlists,offline_access'});
+			});
+		});
+
+		$("#Logout").click(function(){
+			$.post("/api/logout",function(){
+				self.location.reload();
 			});
 		});
 
 		var name = toolbar.data("name"),
 			fbuid = toolbar.data("fbuid"),
-			join =  toolbar.data("join");
+			join =  toolbar.data("join"),
+			access =  toolbar.data("access");
 
 		if(fbuid != "" && fbuid ){
-			doLogin(fbuid,name,join);
+			doLogin(fbuid,name,join,access);
 			//Already logined;
 			return true;
 		}

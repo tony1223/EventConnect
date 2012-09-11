@@ -80,20 +80,23 @@ module.exports = function(db){
 					res.render('event', { 
 						title: '活動狂 Event Connect' ,
 						event:item,
-						user : user
+						user : user,
+						access:req.session.accesstoken
 					} );
 				},function(){
 					res.render('event', { 
 						title: '活動狂 Event Connect' ,
 						event:item,
-						user : {fbuid:'',name:''}
+						user : {fbuid:'',name:''},
+						access:req.session.accesstoken
 					});
 				});
 			}else{
 				res.render('event', { 
 					title: '活動狂 Event Connect' ,
 					event:item,
-					user :{fbuid:'',name:''}
+					user :{fbuid:'',name:''},
+					access:req.session.accesstoken
 				} );
 			}
 		});
@@ -211,17 +214,22 @@ module.exports = function(db){
 
 	this.api = {
 		login: function(req,res){
-		    /* Select 'contact' collection */
 		    db.collection('users', function(err, users) {
 		    	users.find({fbuid:req.params.fbuid}).toArray(function(err,items){
+	    			req.session = req.session || {};
+	    			req.session.accesstoken = req.body.accesstoken;		    		
 		    		if( items.length == 0 ){
 		    			res.send({isSuccess:false,data:null});
 		    		}else{
-		    			req.session = { fbuid: req.params.fbuid };
+		    			req.session.fbuid = req.params.fbuid;
 		    			res.send({isSuccess:true,data:items[0].name});
 		    		}
 		    	});
 			});
+		},
+		logout: function(req,res){
+			req.session = {};
+			res.send({isSuccess:true,data:null});
 		},
 		cancelEvent: function(req,res){
 			db.collection('user_seat', function(err, user_seats) {

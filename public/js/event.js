@@ -40,6 +40,7 @@ require(["jquery","global","FB","events/login","events/userlist","jquery.alerts"
 						seatId:self.id
 					},function(data){
 						if(data.isSuccess){
+							global.trigger("refreshUserList");
 							clearMySeat(window.loginInfo.uid);
 							if(self.getAttribute("fill").toLowerCase() == "#ff0000"){
 								self.setAttribute("fill","#00FF00");
