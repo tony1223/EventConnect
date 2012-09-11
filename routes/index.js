@@ -226,7 +226,7 @@ module.exports = function(db){
 		    		if( items.length == 0 ){
 		    			var obj = {fbuid:req.params.fbuid};
 		    			users.save(obj);
-		    			res.send({isSuccess:true,data:obj});
+		    			res.send({isSuccess:true,data:null});
 		    		}else{
 		    			req.session.fbuid = req.params.fbuid;
 		    			res.send({isSuccess:true,data:items[0].name});

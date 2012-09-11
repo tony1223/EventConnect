@@ -90,15 +90,17 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 								).then(function(data){
 								if(data.isSuccess){
 									name = data.data;
-									if(data.cb) data.cb();
-									doLogin(uid,name,data.join,response.authResponse.accessToken);
-								}else{
-									$("#username").trigger("rename",{
-										cb:function(){
-											doLogin(uid,name,false,response.authResponse.accessToken);
-											if(data.cb) data.cb();
-										}
-									});
+									if(!name){	
+										$("#username").trigger("rename",{
+											cb:function(){
+												doLogin(uid,name,false,response.authResponse.accessToken);
+												if(data.cb) data.cb();
+											}
+										});		
+									}else{							
+										if(data.cb) data.cb();
+										doLogin(uid,name,data.join,response.authResponse.accessToken);
+									}
 								}
 							});
 					} else {
