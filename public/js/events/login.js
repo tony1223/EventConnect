@@ -37,6 +37,8 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 				function(name){
 					if(name){
 		   				$.post("/api/setUserName/" + data.fbuid,{name:name},function(){
+		   					window.loginInfo = window.loginInfo ||{};
+		   					window.loginInfo.name = name;
 							$("#username").html("User:"+name);
 		   				});
 		   				if(data && data.cb){
