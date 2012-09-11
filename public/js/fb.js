@@ -1,4 +1,4 @@
-define(function(){
+define("FB",[],function(){
   // Load the SDK Asynchronously
   (function(d){
      var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
@@ -25,7 +25,7 @@ define(function(){
     		}
     	}
     };  
-	window.fbAsyncInit = function() {
+  	window.fbAsyncInit = function() {
     	FB.init({
 	      appId      : '454565751232147', // App ID
 	      channelUrl : '//eventconnect.tonyq.org/channel.html', // Channel File

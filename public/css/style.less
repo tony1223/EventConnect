@@ -15,19 +15,50 @@ body {
     	cursor:pointer;
     }
 }
+
+
 .toolbar{
-    position: fixed; bottom: 5%; width: 300px; left: 0%; height: 20px;
+    position: fixed; bottom: 5%; width: 100%; left: 0%; height: 20px;
 
     #username{
-        font-size:24px;
+        font-size:12px;
         font-weight:bold;
-        width:200px;
+        width:100px;
+        line-height:20px;
+        float:left;
+        padding:7px;
+        text-align:center;
     }
-    .login,.home{
+    .auth{
+        width: 500px;
+    }
+
+    .login,.home,.toolbar,.auth{
+        float:left;
+    }
+
+    .auth .join,.auth .cancel{
         float:left;
     }
 
 }
+.notlogin{
+    .auth{
+        display:none;
+    }
+}
+.notjoin{
+    .login,.cancel{
+        display:none;
+    }
+}
+.joined{
+    .login,.join{
+        display:none;
+    }
+}
+
+
 .userlist{
     position: fixed;
     right: 0;

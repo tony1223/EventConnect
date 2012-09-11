@@ -1,4 +1,5 @@
 
+var $ = require("jQuery");
 module.exports = function(db){
 
 	function findEvent(id,cb){
@@ -21,6 +22,39 @@ module.exports = function(db){
 
 	   	});	
 	}
+	function findUserWithSeat(fbuid,eventId,db,success,fail){
+		if($.trim(fbuid) == "" ||$.trim(eventId) == "" ){
+			if(fail) fail();
+		}
+	    db.collection('users', function(err, userCollection) {
+	    	userCollection.find({fbuid:fbuid}).toArray(function(err,users){
+	    		if(err) throw err;
+	    		if( users.length == 0 ){
+	    			if(fail) fail();
+	    			return false;
+	    		}
+				db.collection('user_seat', function(err, seatCollection) {
+					if(err) throw err;
+			    	seatCollection.find({
+			    		fbuid:""+fbuid,
+			    		eventId:""+eventId
+			    	}).toArray(function(err,seats){
+			    		if( seats.length == 0 ){
+			    			success(users[0]);
+			    			return true;
+			    		}
+
+			    		success({
+			    			fbuid:users[0].fbuid,
+			    			name:users[0].name,
+			    			join:true,
+			    			seat:seats[0].seatId
+			    		});
+			    	});
+				});	    			
+	    	});
+		});
+	}
 
 	var dateformat = require('dateformat')
 	function dateformatHelper(str){
@@ -33,20 +67,35 @@ module.exports = function(db){
 	    /* Select 'contact' collection */
 	    db.collection('events', function(err, events) {
 	    	events.find({}).toArray(function(err,items){
-	    		res.render('index', { title: '活動狂' ,events:items,dateFormat:dateformatHelper} );
+	    		res.render('index', { title: '活動狂 Event Connect' ,events:items,dateFormat:dateformatHelper} );
 	    	});
 		});
 	}; 
 
 	this.event = function(req, res){	
-		console.log(req.session);
 		findEvent(req.params.id,function(events,item){
-			console.log("session:"+(req.session ? req.session.fbuid : null) );
-			res.render('event', { 
-				title: '活動狂' ,
-				event:item,
-				fbuid:(req.session ? req.session.fbuid : null)
-			} );
+
+			if(req.session ){
+				findUserWithSeat(req.session.fbuid,item._id,db,function(user){
+					res.render('event', { 
+						title: '活動狂 Event Connect' ,
+						event:item,
+						user : user
+					} );
+				},function(){
+					res.render('event', { 
+						title: '活動狂 Event Connect' ,
+						event:item,
+						user : {fbuid:'',name:''}
+					});
+				});
+			}else{
+				res.render('event', { 
+					title: '活動狂 Event Connect' ,
+					event:item,
+					user :{fbuid:'',name:''}
+				} );
+			}
 		});
 	}; 
 
@@ -55,7 +104,7 @@ module.exports = function(db){
 		    /* Select 'contact' collection */
 		    db.collection('events', function(err, events) {
 		    	events.find({}).toArray(function(err,items){
-		    		res.render('admin/index', { title: '活動狂' ,events:items,dateFormat:dateformatHelper} );
+		    		res.render('admin/index', { title: '活動狂 Event Connect'  ,events:items,dateFormat:dateformatHelper} );
 		    	});
 			});
 		},
@@ -174,6 +223,49 @@ module.exports = function(db){
 		    	});
 			});
 		},
+		cancelEvent: function(req,res){
+			db.collection('user_seat', function(err, user_seats) {
+		    	//user_seats.remove({});
+		    	user_seats.find({
+					fbuid:req.body.fbuid,
+		    		eventId: req.body.eventId
+		    	}).toArray(function(err,items){
+		    		if( items.length == 0 ){
+		    			res.send({isSuccess:false,errorMessage:"Not joined this event."});
+		    		}else{
+		    			var obj = items[0];
+		    			user_seats.remove(obj);
+		    			res.send({isSuccess:true});
+		    		}
+		    	});
+			});
+		},
+		joinEvent: function(req,res){
+			db.collection('user_seat', function(err, user_seats) {
+		    	//user_seats.remove({});
+		    	user_seats.find({
+					fbuid:req.body.fbuid,
+					name:req.body.name,
+		    		eventId: req.body.eventId
+		    	}).toArray(function(err,items){
+		    		if( items.length == 0 ){
+		    			var obj = { 
+		    				fbuid:req.body.fbuid , 
+		    				name : req.body.name, 
+		    				eventId :req.body.eventId,
+		    				seatId: null
+		    			};
+		    			user_seats.save(obj);
+		    			res.send({isSuccess:true,data:obj.name});
+		    		}else{
+		    			var obj = items[0];
+		    			obj.seatId =  req.body.seatId;
+		    			user_seats.save(obj);
+		    			res.send({isSuccess:false,errorMessage:"Already joined."});
+		    		}
+		    	});
+			});
+		},
 		setUserName: function(req,res){
 		    /* Select 'contact' collection */
 		    db.collection('users', function(err, users) {
@@ -218,11 +310,10 @@ module.exports = function(db){
 		    				seatId: req.body.seatId
 		    			};
 		    			user_seats.save(obj);
-		    			console.dir(obj);
 		    			res.send({isSuccess:true,data:obj.name});
 		    		}else{
 		    			var obj = items[0];
-		    			obj.seatId =  req.body.seatId;
+		    			obj.seatId = req.body.seatId;
 		    			user_seats.save(obj);
 		    			res.send({isSuccess:true,data:obj.name});
 		    		}

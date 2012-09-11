@@ -56,6 +56,8 @@ app.get('/event/:id', routes.event);
 
 
 app.post('/api/login/:fbuid', routes.api.login);
+app.post('/api/cancelEvent', routes.api.cancelEvent);
+app.post('/api/joinEvent', routes.api.joinEvent);
 app.post('/api/setUserName/:fbuid', routes.api.setUserName);
 app.post('/api/doOrderSeat/', routes.api.doOrderSeat);
 
