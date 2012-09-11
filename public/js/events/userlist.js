@@ -38,6 +38,24 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 						list.userSeats[this.fbuid] = this; 
 						var user = $("<tr><td id='fb-"+this.fbuid+"'><i class='icon-user'></i>"+this.name+"</td></tr>");
 						user.data("info",this);
+
+
+						if(this.seatId){
+							(function(seatId){
+								$(user).hover(function(){
+									var seat = $(".seat #"+seatId);
+									if(seat.length) {
+										seat.data("old",seat.attr("fill"));
+										seat.attr("fill","#FFFF00");
+									};
+								},function(){
+									var seat = $(".seat #"+seatId);
+									if(seat.length) {
+										seat.attr("fill",seat.data("old"));
+									};
+								});
+							})(this.seatId);
+						}
 						$("#users").append(user);
 					});
 

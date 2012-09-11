@@ -11,6 +11,11 @@ html
 			div.caption All User List
 			table.table.table-bordered.table-hover#users
 		div.chat
+			table.table.table-bordered#chats
+			div
+				請輸入文字
+				input(type="text")#input
+		div.chatHandler
 		div.toolbar.preparing(data-fbuid=user.fbuid,data-name=user.name,data-join=(user.join?"true":"false"),data-seat=user.seat)
 			//- a(href="/").btn.home Home 
 			div.login
