@@ -222,9 +222,10 @@ module.exports = function(db){
 		    db.collection('users', function(err, users) {
 		    	users.find({fbuid:req.params.fbuid}).toArray(function(err,items){
 	    			req.session = req.session || {};
-	    			req.session.accesstoken = req.body.accesstoken;		    		
+	    			console.log("login");
+	    			console.dir(items);
 		    		if( items.length == 0 ){
-		    			var obj = {fbuid:req.params.fbuid};
+		    			var obj = { fbuid:req.params.fbuid };
 		    			users.save(obj);
 		    			res.send({isSuccess:true,data:null});
 		    		}else{
@@ -292,10 +293,14 @@ module.exports = function(db){
 		    			req.session.fbuid = req.params.fbuid;
 		    			res.send({isSuccess:true,data:obj.name});
 		    		}else{
-		    			res.send({isSuccess:false,data:null});
+		    			var obj = items[0];
+		    			obj.name = req.body.name;
+		    			users.save(obj);
+		    			req.session = req.session  || {};
+		    			req.session.fbuid = req.params.fbuid;
+		    			res.send({isSuccess:true,data:obj.name});
 		    		}
 		    	});
-		    	db.close();
 			});
 		},
 		getUserSeats:function (req,res){

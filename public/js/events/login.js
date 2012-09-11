@@ -26,26 +26,26 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 					this.setAttribute("fill",Infos.Color.self);
 				}
 			});
-			$("#username").on("rename",function(e,data){
-				jPrompt("您好，請輸入一個您想要的暱稱",'','輸入暱稱',
-					function(name){
-						if(name){
-		   				$.post("/api/setUserName/"+fbuid,{name:name},function(){
+			$("#username").click(function(){
+				$("#username").trigger("rename",{fbuid:fbuid});
+			});			
+			$("#username").text("User:"+name);
+			
+	    }
+		toolbar.find("#username").on("rename",function(e,data){
+			jPrompt("您好，請輸入一個您想要的暱稱",'','輸入暱稱',
+				function(name){
+					if(name){
+		   				$.post("/api/setUserName/" + data.fbuid,{name:name},function(){
 							$("#username").html("User:"+name);
 		   				});
 		   				if(data && data.cb){
 		   					data.cb();
 		   				}
 		   			}
-					}
-				);
-			});
-			$("#username").click(function(){
-				$("#username").trigger("rename");
-			});			
-			$("#username").text("User:"+name);
-			
-	    }
+				}
+			);
+		});	    
 	    toolbar.find(".auth .cancel").click(function(){
 	    	if (window.loginInfo){
 	    		var userInfo = window.loginInfo;
@@ -87,15 +87,16 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 									{
 										accesstoken:response.authResponse.accessToken
 									}
-								).then(function(data){
+								,function(data){
 								if(data.isSuccess){
-									name = data.data;
+									name = data.name;
 									if(!name){	
 										$("#username").trigger("rename",{
 											cb:function(){
 												doLogin(uid,name,false,response.authResponse.accessToken);
 												if(data.cb) data.cb();
-											}
+											},
+											fbuid : uid
 										});		
 									}else{							
 										if(data.cb) data.cb();
@@ -120,11 +121,14 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 			fbuid = toolbar.data("fbuid"),
 			join =  toolbar.data("join"),
 			access =  toolbar.data("access");
-
+		toolbar.removeClass("preparing");
 		if(fbuid != "" && fbuid ){
 			doLogin(fbuid,name,join,access);
 			//Already logined;
 			return true;
+		}else{
+			toolbar.addClass("notlogin");
 		}
+
 	}
 });

@@ -42,6 +42,9 @@ body {
 .toolbar .auth #Logout {
   float: left;
 }
+.preparing {
+  display: none;
+}
 .notlogin .auth {
   display: none;
 }

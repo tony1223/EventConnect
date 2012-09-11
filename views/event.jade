@@ -10,8 +10,8 @@ html
 		div.userlist
 			div.caption All User List
 			table.table.table-bordered.table-hover#users
-			
-		div.toolbar.notlogin(data-fbuid=user.fbuid,data-name=user.name,data-join=(user.join?"true":"false"),data-seat=user.seat)
+		div.chat
+		div.toolbar.preparing(data-fbuid=user.fbuid,data-name=user.name,data-join=(user.join?"true":"false"),data-seat=user.seat)
 			//- a(href="/").btn.home Home 
 			div.login
 				a(id="login").btn FB Login
