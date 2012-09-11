@@ -3,9 +3,13 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes');
+var db = require("./db");
+db.open(function(err) { 
+  if(err) throw err;
+});
 
+var express = require('express');
+var routes = require('./routes')(db);
 var app = express();
 
 // Configuration
