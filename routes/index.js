@@ -84,7 +84,7 @@ module.exports = function(db){
 				item.startDate = new Date(req.body.startDate);
 				item.endDate = new Date(req.body.endDate);
 				events.save(item);
-				res.redirect('/'); 
+				res.redirect('/Admin'); 
 			});
 	 	},
 	 	editBackground:function(req, res){	
@@ -138,7 +138,7 @@ module.exports = function(db){
 				});
 				item.seatIds = ids;
 				events.save(item);
-				res.redirect('/'); 
+				res.redirect('/Admin'); 
 			});
 	 	} 	
 	}; 
