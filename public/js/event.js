@@ -6,7 +6,7 @@ var Infos ={
 	}
 };
 
-require(["jquery","fb","events/loaduser"],function($,FBUtil){
+require(["jquery","fb","events/userlist"],function($,FBUtil){
 	$(function(){
 		FBUtil.after(function(FB){
 		    $("#join").show();
