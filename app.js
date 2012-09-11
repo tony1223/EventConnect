@@ -33,11 +33,12 @@ app.configure('production', function(){
 });
 
 // Routes
-app.get('/', routes.index);
+app.get('/admin', routes.index);
 
 app.get('/admin/new', routes.admin._new);
 app.post('/admin/create', routes.admin.create);
 app.get('/admin/edit/:id', routes.admin.edit);
+app.get('/admin/delete/:id', routes.admin["delete"]);
 app.post('/admin/update/:id', routes.admin.update);
 
 app.get('/admin/editBackground/:id', routes.admin.editBackground);

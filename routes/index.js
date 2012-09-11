@@ -72,6 +72,12 @@ module.exports = function(db){
 				});
 			});
 	 	},
+		delete:function(req, res){	
+			findEvent(req.params.id,function(events,item){
+				events.remove({_id:new db.ObjectId(req.params.id)});
+				res.redirect('/Admin'); 
+			});
+	 	},
 	 	update:function(req, res){	
 			findEvent(req.params.id,function(events,item){
 				item.name = req.body.name;
