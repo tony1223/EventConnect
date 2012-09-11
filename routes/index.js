@@ -224,7 +224,9 @@ module.exports = function(db){
 	    			req.session = req.session || {};
 	    			req.session.accesstoken = req.body.accesstoken;		    		
 		    		if( items.length == 0 ){
-		    			res.send({isSuccess:false,data:null});
+		    			var obj = {fbuid:req.params.fbuid};
+		    			items.save(obj);
+		    			res.send({isSuccess:true,data:obj});
 		    		}else{
 		    			req.session.fbuid = req.params.fbuid;
 		    			res.send({isSuccess:true,data:items[0].name});
