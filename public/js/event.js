@@ -6,7 +6,7 @@ var Infos ={
 	}
 };
 
-require(["jquery","global","FB","events/login","events/userlist","jquery.alerts"],
+require(["jquery","global","fb","events/login","events/userlist","jquery.alerts"],
 	function($,global,FBUtil,login,list){
 	$(function(){
 		var eventId = $("#eventId").val();

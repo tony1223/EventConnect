@@ -1,4 +1,4 @@
-define(["jquery","FB","global"],function($,FBUtil,global){
+define(["jquery","fb","global"],function($,FBUtil,global){
 
 	return function (eventId){
 		
