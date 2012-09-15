@@ -2,8 +2,9 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 
 	return function (eventId){
 		
-		var list = this;
+		var list = this, logined = false;
 		global.on("markFriendList",function(e,data){
+			logined = true;
 			FB.api({
 				    method: 'fql.query',
 				    query: 'SELECT uid,name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())'
@@ -20,6 +21,14 @@ define(["jquery","fb","global"],function($,FBUtil,global){
 		    });
 		});
 
+		setInterval(function(){
+			global.trigger("refreshUserList");
+			if(logined){
+				setTimeout(function(){
+					global.trigger("markFriendList");
+				},1000);
+			}
+		},5000);
 		global.on("refreshUserList",function(){
 			$.get("/api/getUserSeats/" + eventId +"?time="+new Date().getTime(),function(response){
 				if(response.isSuccess){
