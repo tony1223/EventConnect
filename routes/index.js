@@ -1,82 +1,23 @@
 
-var $ = require("jQuery");
-module.exports = function(db){
+var $ = require("jQuery"), util = require("../helper/util.js");
+module.exports = function(dao){
+	var db = dao._db;
 
-	function findEvent(id,cb){
-	    /* Select 'contact' collection */
-	    db.collection('events', function(err, events) {
-	    	/*
-	    	events.save(
-	    		{
-	    			name:"test",
-	    			startDate:new Date("2012/9/1"),
-	    			endDate:new Date("2012/9/5")
-	    		}
-	    	);*/
-	    	events.find({_id:new db.ObjectId(id)}).toArray(function(err,items){	
-	    		if(items.length == 0 )    {
-	    			throw "event not found";
-	    		}
-	    		cb(events,items[0]);
-	    	});	    	
-
-	   	});	
-	}
-	function findUserWithSeat(fbuid,eventId,db,success,fail){
-		if($.trim(fbuid) == "" ||$.trim(eventId) == "" ){
-			if(fail) fail();
-		}
-	    db.collection('users', function(err, userCollection) {
-	    	userCollection.find({fbuid:fbuid}).toArray(function(err,users){
-	    		if(err) throw err;
-	    		if( users.length == 0 ){
-	    			if(fail) fail();
-	    			return false;
-	    		}
-				db.collection('user_seat', function(err, seatCollection) {
-					if(err) throw err;
-			    	seatCollection.find({
-			    		fbuid:""+fbuid,
-			    		eventId:""+eventId
-			    	}).toArray(function(err,seats){
-			    		if( seats.length == 0 ){
-			    			success(users[0]);
-			    			return true;
-			    		}
-
-			    		success({
-			    			fbuid:users[0].fbuid,
-			    			name:users[0].name,
-			    			join:true,
-			    			seat:seats[0].seatId
-			    		});
-			    	});
-				});	    			
-	    	});
-		});
-	}
-
-	var dateformat = require('dateformat')
-	function dateformatHelper(str){
-		return dateformat(str,"yyyy/mm/dd HH:MM:ss");
-	}
 	/*
 	 * GET home page.
 	 */
 	this.index = function(req, res){
 	    /* Select 'contact' collection */
-	    db.collection('events', function(err, events) {
-	    	events.find({}).toArray(function(err,items){
-	    		res.render('index', { title: '活動狂 Event Connect' ,events:items,dateFormat:dateformatHelper} );
-	    	});
-		});
+	    dao.Event.all(function(items){
+	    	res.render('index', { title: '活動狂 Event Connect' ,events:items,dateFormat:util.dateformat} );
+	    });
 	}; 
 
 	this.event = function(req, res){	
-		findEvent(req.params.id,function(events,item){
+		dao.Event.find(req.params.id,function(events,item){
 
 			if(req.session ){
-				findUserWithSeat(req.session.fbuid,item._id,db,function(user){
+				dao.User.findUserBySeat(req.session.fbuid,item._id,function(user){
 					res.render('event', { 
 						title: '活動狂 Event Connect' ,
 						event:item,
@@ -110,47 +51,45 @@ module.exports = function(db){
 	this.admin = {
 		index : function(req, res){
 		    /* Select 'contact' collection */
-		    db.collection('events', function(err, events) {
-		    	events.find({}).toArray(function(err,items){
-		    		res.render('admin/index', { title: '活動狂 Event Connect'  ,events:items,dateFormat:dateformatHelper} );
-		    	});
+		    dao.Event.all(function(items){
+	    		res.render('admin/index', { title: '活動狂 Event Connect'  ,events:items,dateFormat:util.dateformat} );
 			});
 		},
 		_new:function(req, res){	
 			res.render('admin/new', {
 				title: '建立活動 ' ,
-				dateFormat:dateformatHelper
+				dateFormat:util.dateformat
 			});
 		}, 
 		create:function(req, res){
 		    /* Select 'contact' collection */
-		    db.collection('events', function(err, events) {		
-		    	var item = {};
-				item.name = req.body.name;
-				item.startDate = new Date(req.body.startDate);
-				item.endDate = new Date(req.body.endDate);
-				events.save(item);
+	    	var item = {};
+			item.name = req.body.name;
+			item.startDate = new Date(req.body.startDate);
+			item.endDate = new Date(req.body.endDate);
+			dao.Event.save(item,function(){
 				res.redirect('/admin/editBackground/'+item._id);
-		    });
+			});
+				
 		},
 		edit:function(req, res){	
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				res.render('admin/edit', {
 					title: '編輯活動 [' + item.name + ']' ,
 					event:item,
 					nav:0,
-					dateFormat:dateformatHelper
+					dateFormat:util.dateformat
 				});
 			});
 	 	},
 		delete:function(req, res){	
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				events.remove({_id:new db.ObjectId(req.params.id)});
 				res.redirect('/Admin'); 
 			});
 	 	},
 	 	update:function(req, res){	
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				item.name = req.body.name;
 				item.startDate = new Date(req.body.startDate);
 				item.endDate = new Date(req.body.endDate);
@@ -159,7 +98,7 @@ module.exports = function(db){
 			});
 	 	},
 	 	editBackground:function(req, res){	
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				res.render('admin/editBackground', {
 					title: '編輯活動 [' + item.name + ']' ,
 					event:item,
@@ -168,14 +107,14 @@ module.exports = function(db){
 			});
 	 	},
 	 	updateBackground:function(req,res){
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				item.background = req.body.background;
 				events.save(item);
 				res.redirect('/admin/editSeat/'+item._id); 
 			});
 	 	},
 	 	editBackgroundInner:function(req,res){
-	 		findEvent(req.params.id,function(events,item){
+	 		dao.Event.find(req.params.id,function(events,item){
 				res.render('admin/editBackgroundInner', {
 					title: '編輯活動地圖 [' + item.name + ']' ,
 					event:item
@@ -183,7 +122,7 @@ module.exports = function(db){
 			});	
 	 	},
 	 	editSeat:function(req, res){	
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				res.render('admin/editSeat', {
 					title: '[' + item.name + '] 編輯活動座位 ' ,
 					event:item,
@@ -192,7 +131,7 @@ module.exports = function(db){
 			});
 	 	},
 	 	editSeatInner: function(req, res){
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				res.render('admin/editSeatInner', {
 					title: '[' + item.name + '] 編輯活動座位' ,
 					event:item,
@@ -201,7 +140,7 @@ module.exports = function(db){
 			});
 	 	},
 	 	updateSeat:function(req,res){
-			findEvent(req.params.id,function(events,item){
+			dao.Event.find(req.params.id,function(events,item){
 				item.seat = req.body.seat;
 				var $ = require("jQuery"),ids = [];
 				$(item.seat).find("ellipse,rect").each(function(){
@@ -219,20 +158,16 @@ module.exports = function(db){
 
 	this.api = {
 		login: function(req,res){
-		    db.collection('users', function(err, users) {
-		    	users.find({fbuid:req.params.fbuid}).toArray(function(err,items){
-	    			req.session = req.session || {};
-	    			console.log("login");
-	    			console.dir(items);
-		    		if( items.length == 0 ){
-		    			var obj = { fbuid:req.params.fbuid };
-		    			users.save(obj);
-		    			res.send({isSuccess:true,data:null});
-		    		}else{
-		    			req.session.fbuid = req.params.fbuid;
-		    			res.send({isSuccess:true,data:items[0].name});
-		    		}
-		    	});
+			dao.User.findByFBUID(req.params.fbuid,function(items){
+				req.session = req.session || {};
+	    		if( items.length == 0 ){
+	    			var obj = { fbuid:req.params.fbuid };
+	    			dao.User.save(obj);
+	    			res.send({isSuccess:true,data:null});
+	    		}else{
+	    			req.session.fbuid = req.params.fbuid;
+	    			res.send({isSuccess:true,data:items[0].name});
+	    		}
 			});
 		},
 		logout: function(req,res){
@@ -240,21 +175,16 @@ module.exports = function(db){
 			res.send({isSuccess:true,data:null});
 		},
 		cancelEvent: function(req,res){
-			db.collection('user_seat', function(err, user_seats) {
-		    	//user_seats.remove({});
-		    	user_seats.find({
-					fbuid:req.body.fbuid,
-		    		eventId: req.body.eventId
-		    	}).toArray(function(err,items){
-		    		if( items.length == 0 ){
-		    			res.send({isSuccess:false,errorMessage:"Not joined this event."});
-		    		}else{
-		    			var obj = items[0];
-		    			user_seats.remove(obj);
-		    			res.send({isSuccess:true});
-		    		}
-		    	});
-			});
+			db.Seat.find(req.body.fbuid,req.body.eventId,
+				function /*success*/(){
+					var obj = items[0];
+		    		db.Seat.remove(obj);
+		    		res.send({isSuccess:true});
+				},
+				function /*fail*/(){
+					res.send({isSuccess:false,errorMessage:"Not joined this event."});
+				}
+			);
 		},
 		joinEvent: function(req,res){
 			db.collection('user_seat', function(err, user_seats) {
