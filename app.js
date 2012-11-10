@@ -1,36 +1,41 @@
-
 /**
  * Module dependencies.
  */
 
 var dao = require("./dao");
-dao.after(function(){
-
-
+dao.after(function() {
   var express = require('express'),
-      routes = require('./routes')(dao),
-      app = express(),
-      CookieStore = require('cookie-sessions'),
-      config = require("./config"),
-      port = 3000;
+    routes = new require('./routes')(dao),
+    app = express(),
+    CookieStore = require('cookie-sessions'),
+    config = require("./config"),
+    port = 3000;
 
   // Configuration
-
-  app.configure(function(){
+  app.configure(function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
-    app.use(require('less-middleware')({ src: __dirname + '/public/' ,force:true ,compress: false/*, debug:true*/}));
-    app.use(CookieStore({ secret: config.secret }));
+    app.use(require('less-middleware')({
+      src: __dirname + '/public/',
+      force: true,
+      compress: false /*, debug:true*/
+    }));
+    app.use(CookieStore({
+      secret: config.secret
+    }));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(__dirname + '/public'));
   });
-  app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.configure('development', function() {
+    app.use(express.errorHandler({
+      dumpExceptions: true,
+      showStack: true
+    }));
   });
 
-  app.configure('production', function(){
+  app.configure('production', function() {
     app.use(express.errorHandler());
   });
 

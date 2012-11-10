@@ -12,6 +12,7 @@
         "xmlhttprequest": "*",
         "dateformat" : "*",
         "cookie-sessions" : "*",
-        "less-middleware" : "*"
+        "less-middleware" : "*",
+        "irc" : "*"
     }
 }
