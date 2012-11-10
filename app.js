@@ -8,11 +8,12 @@ db.open(function(err) {
   if(err) throw err;
 });
 
-var express = require('express');
-var routes = require('./routes')(db);
-var app = express();
-var CookieStore = require('cookie-sessions');
-var config = require("./config");
+var express = require('express'),
+    routes = require('./routes')(db),
+    app = express(),
+    CookieStore = require('cookie-sessions'),
+    config = require("./config"),
+    port = 3000;
 
 // Configuration
 
@@ -64,5 +65,5 @@ app.post('/api/doOrderSeat/', routes.api.doOrderSeat);
 app.get('/api/getUserSeats/:eventId', routes.api.getUserSeats);
 
 
-app.listen(3000);
-console.log("Express server listening on port:"+new Date());
+app.listen(port);
+console.log("Express server listening on port: " + port + " on " + new Date());
