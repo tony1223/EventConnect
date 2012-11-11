@@ -1,6 +1,7 @@
 /**
  * Module dependencies.
  */
+global.config = require("./config");
 
 var dao = require("./dao");
 dao.after(function() {
@@ -8,7 +9,6 @@ dao.after(function() {
     routes = new require('./routes')(dao),
     app = express(),
     CookieStore = require('cookie-sessions'),
-    config = require("./config"),
     port = 3000;
 
   // Configuration
@@ -21,7 +21,7 @@ dao.after(function() {
       compress: false /*, debug:true*/
     }));
     app.use(CookieStore({
-      secret: config.secret
+      secret: global.config.secret
     }));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
@@ -72,4 +72,11 @@ dao.after(function() {
   app.listen(port);
   console.log("Express server listening on port: " + port + " on " + new Date());
 
+});
+
+var IRC = require('tool/irc'), irc = new IRC();
+irc.connect(global.config.ircName,global.config.ircPassword);
+
+this.add('#tonyq_test', function(from, message) {
+  console.log(from + ' => #tonyq_test: ' + message);
 });

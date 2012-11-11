@@ -1,0 +1,5 @@
+module.exports = {
+	secret:'12345',
+	ircName:"myircname",
+	ircPassword:"myirc"
+};

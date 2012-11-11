@@ -122,6 +122,15 @@ module.exports = dao = {
 			});
 		}
 	});
+
+	dao.reg("IrcLog", {
+		save:function(log){
+			db.collection('irc_log', function(err, irc) {
+				irc.save(log);
+			});
+		}
+	});
+
 	var queue = [],
 		opened = false;
 	dao.after = function(fn) {
