@@ -9,6 +9,11 @@ var Infos ={
 require(["jquery","global","fb","events/login","events/userlist","jquery.alerts"],
 	function($,global,FBUtil,login,list){
 	$(function(){
+		var socket = io.connect('http://localhost');
+	    socket.on('msg', function (data) {
+	       console.log(JSON.stringify(data));
+	    });
+
 		var eventId = $("#eventId").val();
 		list(eventId);
 		FBUtil.after(function(FB){

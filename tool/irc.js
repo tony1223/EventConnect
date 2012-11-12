@@ -44,13 +44,23 @@ IRCWrapper.prototype.after = function(fn) {
 	}
 };
 
+IRCWrapper.prototype.listen = function(channel,cb){
+	if(this._channels[channel]){
+		this._channels[channel].on("msg",cb);
+	}
+};
+
 IRCWrapper.prototype.add = function(channel,log_method) {
 	this.after(function() {
-		if(this._channels[channel] != null) {
+		var wrapper = this;
+		if(wrapper._channels[channel] != null) {
 			return false;
 		}
-		this._client.join(channel);
-		this._client.on('message'+channel, log_method);
+		wrapper._channels[channel] = new events.EventEmitter();
+		wrapper._client.join(channel);
+		wrapper._client.on('message'+channel, function(from,to,message){
+			wrapper._channels[channel].emit("msg",from,to,message);
+		});
 	});
 };
 

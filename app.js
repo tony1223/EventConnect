@@ -9,7 +9,19 @@ dao.after(function() {
     routes = new require('./routes')(dao),
     app = express(),
     CookieStore = require('cookie-sessions'),
-    port = 3000;
+    port = 3000 , 
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server),
+    IRC = require("./tool/irc");
+
+  var irc = new IRC(global.config.ircName,global.config.ircPassword);
+  io.sockets.on('connection', function (socket) {
+    socket.on('msg', function (channel) {
+      irc.listen(channel,function(from,to,message){
+        socket.emit('msg', { from:from,to:to,message:message});
+      });
+    });
+  });
 
   // Configuration
   app.configure(function() {
@@ -69,14 +81,8 @@ dao.after(function() {
   app.get('/api/getUserSeats/:eventId', routes.api.getUserSeats);
 
 
-  app.listen(port);
+  server.listen(80);
   console.log("Express server listening on port: " + port + " on " + new Date());
 
 });
 
-var IRC = require('tool/irc'), irc = new IRC();
-irc.connect(global.config.ircName,global.config.ircPassword);
-
-this.add('#tonyq_test', function(from, message) {
-  console.log(from + ' => #tonyq_test: ' + message);
-});

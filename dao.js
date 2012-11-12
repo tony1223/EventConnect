@@ -146,7 +146,8 @@ module.exports = dao = {
 			queue[i]();
 		}
 		queue = null;
-	}
+	};
+
 	db.open(function(err) {
 		if(err) throw err;
 		opened = true;
@@ -154,33 +155,3 @@ module.exports = dao = {
 	});
 
 })(dao, db);
-
-//var books ={
-//	seqNo:,
-//	author:"",
-//	pttLink:"",
-//	postDate:"2012/8/ ",
-//	pttcomments:,
-//	name :"",
-//	type :"",
-//	buytime:"",
-//	buyplace:"",
-//	link :"",
-//	img :"",
-//	howtoget :"",
-//	why :"",
-//	think :"",
-//	worth :"Yes",
-//	suggest:"*****"
-//};
-//
-
-//dao.insertDefaultBook();
-/*
-dao.getBooks(function(){
-	console.dir(arguments);
-});  
-*/
-//dao.getBook(7,function(err,item){
-//	console.log(item[0].think.replace(/\n/gi,"<br />"));
-//});
